@@ -1,0 +1,15 @@
+.centered_elements {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+}
+
+.curp_container {
+  position: fixed;
+  width: 75%;
+  left: 50%;
+  top: 38%;
+  margin-left: -37.5%;
+}
