@@ -1,15 +1,44 @@
 .centered_elements {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  /* justify-content: center; */
   align-items: center;
   margin: auto;
 }
 
 .curp_container {
-  position: fixed;
-  width: 75%;
-  left: 50%;
-  top: 38%;
-  margin-left: -37.5%;
+  padding: 15px;
+  grid-area: c;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.formulario_datos {
+  border-right: 1px solid #c8c8c8;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+.row_datos {
+  margin: 5%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
+
+.paper_container {
+  width: 85%;
+  min-height: 80vh;
+  padding: 20px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 100px 400px;
+  grid-template:
+    "a a"
+    "b c";
+  align-items: center;
 }
