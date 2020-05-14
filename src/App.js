@@ -1,5 +1,5 @@
 import React from 'react';
-import './css/styles.css';
+import './assets/css/styles.css';
 import Container from './components/Container'
 
 function App() {

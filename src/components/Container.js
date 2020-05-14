@@ -1,15 +1,26 @@
 import React, { Component } from 'react';
 import UserDataForm from './UserDataForm';
 import ShowCurp from './ShowCurp';
-import Paper from '@material-ui/core/Paper'
+import TitleLine from './TitleLine'
 import Typography from '@material-ui/core/Typography'
+import Loader from './Loader'
+import moment from 'moment';
 
 class Container extends Component {
+  constructor() {
+    super()
+
+    this.state = {
+      curp: '',
+      isCalculating: false
+    }
+  }
 
   submitCurpData = async (data) => {
-    console.log(data)
+    this.setState({isCalculating: true})
     const {fechaNacimiento, values } = data
-    const sendInfo = {...values, ...fechaNacimiento }
+    const formatFechaNacimiento = moment(fechaNacimiento).format("DD/MM/YYYY")
+    const sendInfo = {...values, fechaNacimiento: formatFechaNacimiento }
     const url = 'https://curp-service-dot-findep-produccion.uc.r.appspot.com/curp\n'
 
     var myHeaders = new Headers();
@@ -24,22 +35,38 @@ class Container extends Component {
       redirect: 'follow'
     };
 
-    await fetch(url, requestOptions)
-      .then(response => response.text())
-      .then(result => console.log(result))
-      .catch(error => console.log('error', error));
+    fetch(url, requestOptions)
+      .then(async response => {
+        this.setState({isCalculating: false})
+        const resp = await response.json()
+        const { contenido: {curp} } = resp
+        this.setState({curp: curp})
+      })
+      // .then(result => console.log(result))
+      .catch(error => {
+        this.setState({
+          isCalculating: false,
+          curp: 'No fue posible calcular su CURP. Verifique su información e inténtelo de nuevo.'
+        })
+        console.log('error', error)
+      });
   }
 
   render() {
     return (
-      <div className="centered_elements" style={{width: '100%', paddingTop: '50px'}}>
-        <Paper elevation={3} className="paper_container">
-          <Typography variant ="h4" style={{gridArea: 'a', marginLeft: '30px'}}>
-            Servicio de Cálculo de CURP
-          </Typography>
-          <UserDataForm style={{gridArea: 'b b', minWidth: '50%'}} submit={values => this.submitCurpData(values)} />
-          <ShowCurp style={{gridArea: 'c c'}} curp="afafsdfsdfsd123123" />
-        </Paper>
+      <div style={{padding: '30px 100px 40px'}}>
+        <div className="centered_elements border_shadow" style={{width: '100%', paddingTop: '50px'}}>
+          <div className="paper_container">
+            <TitleLine />
+            <UserDataForm style={{gridArea: 'b'}} submit={values => this.submitCurpData(values)} />
+            {!this.state.curp && !this.state.isCalculating &&
+              <div className="mensaje_inicial">
+                <Typography variant='h3'>Capture sus datos</Typography>
+              </div>}
+            {this.state.isCalculating && <Loader />}
+            {this.state.curp && !this.state.isCalculating && <ShowCurp style={{gridArea: 'c'}} curp={this.state.curp} />}
+          </div>
+        </div>
       </div>
     );
   }

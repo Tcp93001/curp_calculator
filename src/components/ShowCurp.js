@@ -8,7 +8,7 @@ const ShowCurp = (props) => {
         <Typography variant ="h5" gutterBottom>
           CURP calculada
         </Typography>
-        <Typography variant="h3">
+        <Typography variant="h4">
           {props.curp}
         </Typography>
       </div>
