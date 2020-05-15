@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useFormik } from 'formik';
 import TextField from '@material-ui/core/TextField'
 import MenuItem from '@material-ui/core/MenuItem'
 import Button from '@material-ui/core/Button'
@@ -18,121 +17,110 @@ import { estados } from '../constants'
 
 
 const UserDataForm = (props) => {
-  const [fechaNacimiento, setDate] = useState(moment('01/23/2002'))
-
+  const [fechaNacimiento, setBirthDate] = useState(moment('01/23/2002'))
+  const [genero, setGenero] = useState('')
+  const [nombre, setNombre] = useState('')
+  const [apellidoPaterno, setApellidoPaterno] = useState('')
+  const [apellidoMaterno, setApellidoMaterno] = useState('')
+  const [entidad, setEntidad] = useState('')
   const handleDate = (event) => {
-    setDate(moment(event._d, 'DD/MM/YYYY'))
+    setBirthDate(moment(event._d, 'DD/MM/YYYY'))
   }
 
+  const handleSubmit = () => {
+    props.submit({nombre, apellidoPaterno, apellidoMaterno, fechaNacimiento, genero, entidad})
+  }
 
-  // Pass the useFormik() hook initial form values and a submit function that will
-  // be called when the form is submitted
-  const formik = useFormik({
-    initialValues: {
-      nombre: '',
-      apellidoPaterno: '',
-      apellidoMaterno: '',
-      entidad: '',
-      genero: ''
-    },
-    onSubmit: values => {
-      props.submit({values, fechaNacimiento})
-    }
-  });
+  const resetForm = () => {
+    setBirthDate('02/23/1999')
+    setGenero('')
+    setNombre('')
+    setApellidoPaterno('')
+    setApellidoMaterno('')
+    setEntidad('')
+  }
 
   return (
     <div className="formulario_datos">
-      <form onSubmit={formik.handleSubmit}>
-        <div className="row_datos">
-          <TextField
-            className="campos_datos"
-            label="Nombre"
-            id="nombre"
-            name="nombre"
-            type="text"
-            onChange={formik.handleChange}
-            value={formik.values.nombre}
-            variant="outlined"
-            helperText={formik.errors.nombre}
-            FormHelperTextProps={{error: true}}
+      <div className="row_datos">
+        <TextField
+          className="campos_datos"
+          label="Nombre"
+          id="nombre"
+          name="nombre"
+          type="text"
+          onChange={event => setNombre(event.target.value.toUpperCase())}
+          value={nombre}
+          variant="outlined"
+        />
+        <TextField
+          label="Apellido Paterno"
+          id="apellidoPaterno"
+          name="apellidoPaterno"
+          type="text"
+          onChange={event => setApellidoPaterno(event.target.value.toUpperCase())}
+          value={apellidoPaterno}
+          variant="outlined"
+        />
+      </div>
+      <div className="row_datos">
+        <TextField
+          label="Apellido Materno"
+          id="apellidoMaterno"
+          name="apellidoMaterno"
+          type="text"
+          onChange={event => setApellidoMaterno(event.target.value.toUpperCase())}
+          value={apellidoMaterno}
+          variant="outlined"
+        />
+        <MuiPickersUtilsProvider utils={MomentUtils}>
+          <DatePicker
+            disableFuture
+            name="fechaNacimiento"
+            openTo="year"
+            format="DD/MM/YYYY"
+            label="Fecha de Nacimiento"
+            views={["date", "month", "year"]}
+            value={fechaNacimiento}
+            onChange={event => handleDate(event)}
+            inputVariant="outlined"
           />
+        </MuiPickersUtilsProvider>
+      </div>
+      <div className="row_datos">
+        <TextField
+          select
+          label="Estado de origen / nacimiento"
+          id="entidad"
+          name="entidad"
+          onChange={event => setEntidad(event.target.value)}
+          value={entidad}
+          variant="outlined"
+        >
+          {
+            estados.map((elem, index) => (
+              <MenuItem key={index} value={elem.value}>{elem.name}</MenuItem>
+            ))
+          }
+        </TextField>
 
-          <TextField
-            label="Apellido Paterno"
-            id="apellidoPaterno"
-            name="apellidoPaterno"
-            type="text"
-            onChange={formik.handleChange}
-            value={formik.values.apellidoPaterno}
-            variant="outlined"
-            helperText={formik.errors.apellidoPaterno}
-            FormHelperTextProps={{error: true}}
-          />
+        <div>
+          <FormLabel component="legend">Género</FormLabel>
+          <RadioGroup aria-label="gender" name="genero" value={genero} onChange={event => setGenero(event.target.value)}>
+            <FormControlLabel value="H" control={<Radio />} label="Hombre" />
+            <FormControlLabel value="M" control={<Radio />} label="Mujer" />
+          </RadioGroup>
         </div>
-        <div className="row_datos">
-          <TextField
-            label="Apellido Materno"
-            id="apellidoMaterno"
-            name="apellidoMaterno"
-            type="text"
-            onChange={formik.handleChange}
-            value={formik.values.apellidoMaterno}
-            variant="outlined"
-            helperText={formik.errors.apellidoMaterno}
-            FormHelperTextProps={{error: true}}
-          />
-          <MuiPickersUtilsProvider utils={MomentUtils}>
-            <DatePicker
-              disableFuture
-              name="fechaNacimiento"
-              openTo="year"
-              format="DD/MM/YYYY"
-              label="Fecha de Nacimiento"
-              views={["date", "month", "year"]}
-              value={fechaNacimiento}
-              onChange={event => handleDate(event)}
-              inputVariant="outlined"
-            />
-          </MuiPickersUtilsProvider>
-        </div>
-        <div className="row_datos">
-          <TextField
-            select
-            label="Estado de origen / nacimiento"
-            id="entidad"
-            name="entidad"
-            onChange={formik.handleChange}
-            value={formik.values.entidad}
-            variant="outlined"
-            helperText={formik.errors.entidad}
-            FormHelperTextProps={{error: true}}
-          >
-            {
-              estados.map((elem, index) => (
-                <MenuItem key={index} value={elem.value}>{elem.name}</MenuItem>
-              ))
-            }
-          </TextField>
-          <div>
-            <FormLabel component="legend">Género</FormLabel>
-            <RadioGroup aria-label="gender" name="genero" value={formik.values.genero} onChange={formik.handleChange}>
-              <FormControlLabel value="H" control={<Radio />} label="Hombre" />
-              <FormControlLabel value="M" control={<Radio />} label="Mujer" />
-            </RadioGroup>
-          </div>
-          <Button variant="contained" color="primary" type="submit">Calcular CURP</Button>
-          <Button
-            variant="contained"
-            color="default"
-            onClick={formik.resetForm}
-          >
-            Limpiar campos
-          </Button>
-        </div>
-      </form>
+        <Button variant="contained" color="primary" onClick={handleSubmit}>Calcular CURP</Button>
+        <Button
+          variant="contained"
+          color="default"
+          onClick={resetForm}
+        >
+          Limpiar campos
+        </Button>
+      </div>
     </div>
-
-
   );
 };
 
