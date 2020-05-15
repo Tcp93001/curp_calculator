@@ -46,7 +46,7 @@ class Container extends Component {
       .catch(error => {
         this.setState({
           isCalculating: false,
-          curp: 'No fue posible calcular su CURP. Verifique su información e inténtelo de nuevo.'
+          curp: 'No es posible calcular su CURP. Verifique su información e inténtelo de nuevo.'
         })
         console.log('error', error)
       });
