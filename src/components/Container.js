@@ -18,11 +18,10 @@ class Container extends Component {
 
   submitCurpData = async (data) => {
     this.setState({isCalculating: true})
-    const {fechaNacimiento, values } = data
+    const {fechaNacimiento } = data
     const formatFechaNacimiento = moment(fechaNacimiento).format("DD/MM/YYYY")
-    const sendInfo = {...values, fechaNacimiento: formatFechaNacimiento }
+    const sendInfo = {...data, fechaNacimiento: formatFechaNacimiento }
     const url = 'https://curp-service-dot-findep-produccion.uc.r.appspot.com/curp\n'
-
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
